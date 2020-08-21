@@ -125,7 +125,7 @@ public class VelocityServer implements ProxyServer, ForwardingAudience {
   private final VelocityChannelRegistrar channelRegistrar = new VelocityChannelRegistrar();
 
   VelocityServer(final ProxyOptions options) {
-    pluginManager = new VelocityPluginManager(this);
+    pluginManager = new VelocityPluginManager(this, Paths.get("plugins"));
     eventManager = new VelocityEventManager(pluginManager);
     commandManager = new VelocityCommandManager(eventManager);
     scheduler = new VelocityScheduler(pluginManager);
@@ -247,7 +247,7 @@ public class VelocityServer implements ProxyServer, ForwardingAudience {
     logger.info("Loading plugins...");
 
     try {
-      Path pluginPath = Paths.get("plugins");
+      Path pluginPath = pluginManager.getPluginsFolder();
 
       if (!pluginPath.toFile().exists()) {
         Files.createDirectory(pluginPath);

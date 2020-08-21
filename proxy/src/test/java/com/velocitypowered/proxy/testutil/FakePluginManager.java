@@ -5,6 +5,7 @@ import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.PluginDescription;
 import com.velocitypowered.api.plugin.PluginManager;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Optional;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -53,6 +54,11 @@ public class FakePluginManager implements PluginManager {
   @Override
   public void addToClasspath(@NonNull Object plugin, @NonNull Path path) {
     throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public Path getPluginsFolder() {
+    return Paths.get("plugins");
   }
 
   private static class FakePluginContainer implements PluginContainer {

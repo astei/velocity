@@ -83,7 +83,7 @@ class PluginDependencyUtilsTest {
   private static PluginDescription testDescription(String id, PluginDependency... dependencies) {
     return new VelocityPluginDescription(
         id, "tuxed", "0.1", null, null, ImmutableList.of(),
-        ImmutableList.copyOf(dependencies), null
+        ImmutableList.copyOf(dependencies), null, null
     );
   }
 }

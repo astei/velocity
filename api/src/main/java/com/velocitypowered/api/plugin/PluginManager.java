@@ -50,4 +50,11 @@ public interface PluginManager {
    * @throws UnsupportedOperationException if the operation is not applicable to this plugin
    */
   void addToClasspath(Object plugin, Path path);
+
+  /**
+   * Plugins folder which stores all the plugins data.
+   *
+   * @return path to the plugins folder.
+   */
+  Path getPluginsFolder();
 }

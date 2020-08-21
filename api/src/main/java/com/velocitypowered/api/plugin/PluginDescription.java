@@ -3,6 +3,8 @@ package com.velocitypowered.api.plugin;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.velocitypowered.api.plugin.meta.PluginDependency;
+
+import java.io.File;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
@@ -100,5 +102,24 @@ public interface PluginDescription {
    */
   default Optional<Path> getSource() {
     return Optional.empty();
+  }
+
+  /**
+   * Returns the data folder for the plugin.
+   *
+   * @return the data folder for plugin to store data or {@link Optional#empty()} if unknown
+   */
+  default Optional<Path> getDataFolder() {
+    return Optional.empty();
+  }
+
+  /**
+   * Returns the data folder as File.
+   *
+   * @return File that represents the provided Path or {@link Optional#empty()} if unknown
+   */
+  default Optional<File> getDataFolderAsFile() {
+    final Optional<Path> dataFolder = getDataFolder();
+    return dataFolder.map(Path::toFile);
   }
 }

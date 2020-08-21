@@ -43,9 +43,11 @@ public class VelocityPluginManager implements PluginManager {
   private final Map<String, PluginContainer> plugins = new HashMap<>();
   private final Map<Object, PluginContainer> pluginInstances = new IdentityHashMap<>();
   private final VelocityServer server;
+  private final Path pluginsFolder;
 
-  public VelocityPluginManager(VelocityServer server) {
+  public VelocityPluginManager(VelocityServer server, Path pluginsFolder) {
     this.server = checkNotNull(server, "server");
+    this.pluginsFolder = checkNotNull(pluginsFolder, "pluginsFolder");
   }
 
   private void registerPlugin(PluginContainer plugin) {
@@ -166,6 +168,11 @@ public class VelocityPluginManager implements PluginManager {
   @Override
   public boolean isLoaded(String id) {
     return plugins.containsKey(id);
+  }
+
+  @Override
+  public Path getPluginsFolder() {
+    return pluginsFolder;
   }
 
   @Override

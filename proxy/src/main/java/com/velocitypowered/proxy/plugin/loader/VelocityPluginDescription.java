@@ -24,6 +24,7 @@ public class VelocityPluginDescription implements PluginDescription {
   private final List<String> authors;
   private final Map<String, PluginDependency> dependencies;
   private final Path source;
+  private final Path dataFolder;
 
   /**
    * Creates a new plugin description.
@@ -38,7 +39,8 @@ public class VelocityPluginDescription implements PluginDescription {
    */
   public VelocityPluginDescription(String id, @Nullable String name, @Nullable String version,
       @Nullable String description, @Nullable String url,
-      @Nullable List<String> authors, Collection<PluginDependency> dependencies, Path source) {
+      @Nullable List<String> authors, Collection<PluginDependency> dependencies,
+                                   Path source, Path dataFolder) {
     this.id = checkNotNull(id, "id");
     this.name = Strings.emptyToNull(name);
     this.version = Strings.emptyToNull(version);
@@ -47,6 +49,7 @@ public class VelocityPluginDescription implements PluginDescription {
     this.authors = authors == null ? ImmutableList.of() : ImmutableList.copyOf(authors);
     this.dependencies = Maps.uniqueIndex(dependencies, d -> d == null ? null : d.getId());
     this.source = source;
+    this.dataFolder = dataFolder;
   }
 
   @Override
@@ -92,6 +95,11 @@ public class VelocityPluginDescription implements PluginDescription {
   @Override
   public Optional<Path> getSource() {
     return Optional.ofNullable(source);
+  }
+
+  @Override
+  public Optional<Path> getDataFolder() {
+    return Optional.ofNullable(dataFolder);
   }
 
   @Override

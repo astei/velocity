@@ -21,6 +21,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -146,6 +147,8 @@ public class JavaPluginLoader implements PluginLoader {
       dependencies.add(toDependencyMeta(dependency));
     }
 
+    final Path dataFolder = Paths.get("plugins", description.getId());
+
     return new JavaVelocityPluginDescriptionCandidate(
         description.getId(),
         description.getName(),
@@ -155,6 +158,7 @@ public class JavaPluginLoader implements PluginLoader {
         description.getAuthors(),
         dependencies,
         source,
+        dataFolder,
         description.getMain()
     );
   }
@@ -171,6 +175,7 @@ public class JavaPluginLoader implements PluginLoader {
         description.getAuthors(),
         description.getDependencies(),
         description.getSource().orElse(null),
+        description.getDataFolder().orElse(null),
         mainClass
     );
   }
