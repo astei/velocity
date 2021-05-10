@@ -17,6 +17,12 @@
 
 package com.velocitypowered.proxy;
 
+import com.velocitypowered.proxy.command.VelocityCommandManager;
+import com.velocitypowered.proxy.console.VelocityConsoleCommandSource;
+import com.velocitypowered.proxy.console.VelocityTerminalConsole;
+import com.velocitypowered.proxy.plugin.VelocityEventManager;
+import com.velocitypowered.proxy.plugin.VelocityPluginManager;
+import com.velocitypowered.proxy.scheduler.VelocityScheduler;
 import io.netty.util.ResourceLeakDetector;
 import io.netty.util.ResourceLeakDetector.Level;
 import java.text.DecimalFormat;
@@ -71,14 +77,23 @@ public class Velocity {
 
     long startTime = System.currentTimeMillis();
 
-    VelocityServer server = new VelocityServer(options);
+    VelocityPluginManager pluginManager = new VelocityPluginManager();
+    VelocityEventManager eventManager = new VelocityEventManager(pluginManager);
+    VelocityConsoleCommandSource console = new VelocityConsoleCommandSource();
+    VelocityServer server = new VelocityServer(
+            pluginManager,
+            eventManager,
+            new VelocityCommandManager(eventManager),
+            new VelocityScheduler(pluginManager),
+            console,
+            options);
     server.start();
     Runtime.getRuntime().addShutdownHook(new Thread(() -> server.shutdown(false),
         "Shutdown thread"));
 
     double bootTime = (System.currentTimeMillis() - startTime) / 1000d;
     logger.info("Done ({}s)!", new DecimalFormat("#.##").format(bootTime));
-    server.getConsoleCommandSource().start();
+    new VelocityTerminalConsole(console, server).start();
 
     // If we don't have a console available (because SimpleTerminalConsole returned), then we still
     // need to wait, otherwise the JVM will reap us as no non-daemon threads will be active once the

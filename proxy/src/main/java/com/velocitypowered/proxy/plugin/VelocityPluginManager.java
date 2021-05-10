@@ -60,11 +60,6 @@ public class VelocityPluginManager implements PluginManager {
 
   private final Map<String, PluginContainer> plugins = new LinkedHashMap<>();
   private final Map<Object, PluginContainer> pluginInstances = new IdentityHashMap<>();
-  private final VelocityServer server;
-
-  public VelocityPluginManager(VelocityServer server) {
-    this.server = checkNotNull(server, "server");
-  }
 
   private void registerPlugin(PluginContainer plugin) {
     plugins.put(plugin.getDescription().getId(), plugin);
@@ -75,11 +70,12 @@ public class VelocityPluginManager implements PluginManager {
   /**
    * Loads all plugins from the specified {@code directory}.
    * @param directory the directory to load from
+   * @param server the proxy server
    * @throws IOException if we could not open the directory
    */
   @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE",
       justification = "I looked carefully and there's no way SpotBugs is right.")
-  public void loadPlugins(Path directory) throws IOException {
+  public void loadPlugins(Path directory, VelocityServer server) throws IOException {
     checkNotNull(directory, "directory");
     checkArgument(directory.toFile().isDirectory(), "provided path isn't a directory");
 

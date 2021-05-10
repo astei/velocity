@@ -28,6 +28,7 @@ import com.velocitypowered.api.event.proxy.ProxyReloadEvent;
 import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.PluginManager;
+import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
@@ -45,7 +46,7 @@ import com.velocitypowered.proxy.command.builtin.ShutdownCommand;
 import com.velocitypowered.proxy.command.builtin.VelocityCommand;
 import com.velocitypowered.proxy.config.VelocityConfiguration;
 import com.velocitypowered.proxy.connection.client.ConnectedPlayer;
-import com.velocitypowered.proxy.console.VelocityConsole;
+import com.velocitypowered.proxy.console.VelocityConsoleCommandSource;
 import com.velocitypowered.proxy.network.ConnectionManager;
 import com.velocitypowered.proxy.plugin.VelocityEventManager;
 import com.velocitypowered.proxy.plugin.VelocityPluginManager;
@@ -135,18 +136,20 @@ public class VelocityServer implements ProxyServer, ForwardingAudience {
 
   private final Map<UUID, ConnectedPlayer> connectionsByUuid = new ConcurrentHashMap<>();
   private final Map<String, ConnectedPlayer> connectionsByName = new ConcurrentHashMap<>();
-  private final VelocityConsole console;
+  private final VelocityConsoleCommandSource console;
   private @MonotonicNonNull Ratelimiter ipAttemptLimiter;
   private final VelocityEventManager eventManager;
   private final VelocityScheduler scheduler;
   private final VelocityChannelRegistrar channelRegistrar = new VelocityChannelRegistrar();
 
-  VelocityServer(final ProxyOptions options) {
-    pluginManager = new VelocityPluginManager(this);
-    eventManager = new VelocityEventManager(pluginManager);
-    commandManager = new VelocityCommandManager(eventManager);
-    scheduler = new VelocityScheduler(pluginManager);
-    console = new VelocityConsole(this);
+  VelocityServer(final VelocityPluginManager pluginManager, final VelocityEventManager eventManager,
+                 final VelocityCommandManager commandManager, final VelocityScheduler scheduler,
+                 final VelocityConsoleCommandSource console, final ProxyOptions options) {
+    this.pluginManager = pluginManager;
+    this.eventManager = eventManager;
+    this.commandManager = commandManager;
+    this.scheduler = scheduler;
+    this.console = console;
     cm = new ConnectionManager(this);
     servers = new ServerMap(this);
     this.options = options;
@@ -229,7 +232,7 @@ public class VelocityServer implements ProxyServer, ForwardingAudience {
     eventManager.fire(new ProxyInitializeEvent()).join();
 
     // init console permissions after plugins are loaded
-    console.setupPermissions();
+    console.setupPermissions(eventManager);
 
     final Integer port = this.options.getPort();
     if (port != null) {
@@ -280,7 +283,7 @@ public class VelocityServer implements ProxyServer, ForwardingAudience {
           return;
         }
 
-        pluginManager.loadPlugins(pluginPath);
+        pluginManager.loadPlugins(pluginPath, this);
       }
     } catch (Exception e) {
       logger.error("Couldn't load plugins", e);
@@ -633,7 +636,7 @@ public class VelocityServer implements ProxyServer, ForwardingAudience {
   }
 
   @Override
-  public VelocityConsole getConsoleCommandSource() {
+  public ConsoleCommandSource getConsoleCommandSource() {
     return console;
   }
 
