@@ -45,7 +45,6 @@ public interface InvocableCommand<I extends CommandInvocation<?>> extends Comman
    *
    * @param invocation the invocation context
    * @return the tab complete suggestions
-   * @implSpec defaults to wrapping the value returned by {@link #suggest(CommandInvocation)}
    */
   default CompletableFuture<List<String>> suggestAsync(final I invocation) {
     return CompletableFuture.completedFuture(suggest(invocation));
