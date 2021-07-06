@@ -17,6 +17,7 @@ import com.velocitypowered.api.proxy.player.ResourcePackInfo;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerInfo;
 import com.velocitypowered.api.scheduler.Scheduler;
+import com.velocitypowered.api.service.ServiceManager;
 import com.velocitypowered.api.util.ProxyVersion;
 import com.velocitypowered.api.util.bossbar.BossBar;
 import com.velocitypowered.api.util.bossbar.BossBarColor;
@@ -174,6 +175,13 @@ public interface ProxyServer extends Audience {
    * @return the scheduler instance
    */
   Scheduler getScheduler();
+
+  /**
+   * Gets the {@link ServiceManager} instance.
+   *
+   * @return the service manager instance
+   * */
+  ServiceManager getServiceManager();
 
   /**
    * Gets the {@link ChannelRegistrar} instance.
