@@ -33,6 +33,7 @@ import com.velocitypowered.natives.encryption.VelocityCipher;
 import com.velocitypowered.natives.encryption.VelocityCipherFactory;
 import com.velocitypowered.natives.util.Natives;
 import com.velocitypowered.proxy.VelocityServer;
+import com.velocitypowered.proxy.connection.backend.VelocityServerConnection;
 import com.velocitypowered.proxy.connection.client.HandshakeSessionHandler;
 import com.velocitypowered.proxy.connection.client.LoginSessionHandler;
 import com.velocitypowered.proxy.connection.client.StatusSessionHandler;
@@ -102,6 +103,11 @@ public class MinecraftConnection extends ChannelInboundHandlerAdapter {
     }
 
     if (association != null) {
+      // Check if server connections can be logged
+      if (association instanceof VelocityServerConnection
+              && !server.getConfiguration().isLogServerConnections()) {
+        return;
+      }
       logger.info("{} has connected", association);
     }
   }
@@ -114,6 +120,11 @@ public class MinecraftConnection extends ChannelInboundHandlerAdapter {
 
     if (association != null && !knownDisconnect
         && !(sessionHandler instanceof StatusSessionHandler)) {
+      // Check if server connections can be logged
+      if (association instanceof VelocityServerConnection
+              && !server.getConfiguration().isLogServerConnections()) {
+        return;
+      }
       logger.info("{} has disconnected", association);
     }
   }

@@ -130,6 +130,10 @@ announce-proxy-commands = true
 # Enables the logging of commands
 log-command-executions = false
 
+# Enables the logging of server connections. By default, Velocity will log clients attempting to switch between servers.
+# Disable this if you think it clutters your logs too much.
+log-server-connections = true
+
 [query]
 # Whether to enable responding to GameSpy 4 query responses or not.
 enabled = false
