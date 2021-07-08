@@ -490,7 +490,7 @@ public class VelocityServer implements ProxyServer, ForwardingAudience {
    * @param explicitExit whether the user explicitly shut down the proxy
    */
   public void shutdown(boolean explicitExit) {
-    shutdown(explicitExit, Component.text("Proxy shutting down."));
+    shutdown(explicitExit, getConfiguration().getMessages().getShuttingDown());
   }
 
   @Override

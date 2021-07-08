@@ -821,6 +821,7 @@ public class VelocityConfiguration implements ProxyConfig {
     private final String alreadyConnected;
     private final String movedToNewServerPrefix;
     private final String genericConnectionError;
+    private final String shuttingDown;
 
     private Messages(CommentedConfig toml, CommentedConfig defaultToml) {
       this.toml = toml;
@@ -832,6 +833,7 @@ public class VelocityConfiguration implements ProxyConfig {
       this.alreadyConnected = getString("already-connected");
       this.movedToNewServerPrefix = getString("moved-to-new-server-prefix");
       this.genericConnectionError = getString("generic-connection-error");
+      this.shuttingDown = getString("shutting-down");
     }
 
     private String getString(String path) {
@@ -868,6 +870,10 @@ public class VelocityConfiguration implements ProxyConfig {
 
     public Component getGenericConnectionError() {
       return deserialize(genericConnectionError);
+    }
+
+    public Component getShuttingDown() {
+      return deserialize(shuttingDown);
     }
 
     private Component deserialize(String str) {
