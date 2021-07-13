@@ -82,7 +82,7 @@ public final class PluginMessageUtil {
   }
 
   /**
-   * Determines whether or not this plugin message is a legacy (<1.13) registration plugin message.
+   * Determines whether or not this plugin message is a legacy (&lt;1.13) registration plugin message.
    * @param message the plugin message
    * @return whether this is a legacy register message
    */
@@ -92,7 +92,7 @@ public final class PluginMessageUtil {
   }
 
   /**
-   * Determines whether or not this plugin message is a legacy (<1.13) unregistration plugin
+   * Determines whether or not this plugin message is a legacy (&lt;1.13) unregistration plugin
    * message.
    * @param message the plugin message
    * @return whether this is a legacy unregister message
@@ -193,7 +193,7 @@ public final class PluginMessageUtil {
   private static final Pattern INVALID_IDENTIFIER_REGEX = Pattern.compile("[^a-z0-9\\-_]*");
 
   /**
-   * Transform a plugin message channel from a "legacy" (<1.13) form to a modern one.
+   * Transform a plugin message channel from a "legacy" (&lt;1.13) form to a modern one.
    * @param name the existing name
    * @return the new name
    */
