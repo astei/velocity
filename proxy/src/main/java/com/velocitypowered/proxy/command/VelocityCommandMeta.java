@@ -28,8 +28,10 @@ import com.velocitypowered.api.command.CommandSource;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public final class VelocityCommandMeta implements CommandMeta {
 
@@ -37,12 +39,14 @@ public final class VelocityCommandMeta implements CommandMeta {
 
     private final ImmutableSet.Builder<String> aliases;
     private final ImmutableList.Builder<CommandNode<CommandSource>> hints;
+    private Object plugin;
 
     public Builder(final String alias) {
       Preconditions.checkNotNull(alias, "alias");
       this.aliases = ImmutableSet.<String>builder()
               .add(alias.toLowerCase(Locale.ENGLISH));
       this.hints = ImmutableList.builder();
+      this.plugin = null;
     }
 
     @Override
@@ -70,8 +74,15 @@ public final class VelocityCommandMeta implements CommandMeta {
     }
 
     @Override
+    public CommandMeta.Builder plugin(Object plugin) {
+      Preconditions.checkNotNull(plugin, "plugin");
+      this.plugin = plugin;
+      return this;
+    }
+
+    @Override
     public CommandMeta build() {
-      return new VelocityCommandMeta(this.aliases.build(), this.hints.build());
+      return new VelocityCommandMeta(this.aliases.build(), this.hints.build(), this.plugin);
     }
   }
 
@@ -111,11 +122,16 @@ public final class VelocityCommandMeta implements CommandMeta {
 
   private final Set<String> aliases;
   private final List<CommandNode<CommandSource>> hints;
+  private final Object plugin;
 
   private VelocityCommandMeta(
-          final Set<String> aliases, final List<CommandNode<CommandSource>> hints) {
+          final Set<String> aliases,
+          final List<CommandNode<CommandSource>> hints,
+          final @Nullable Object plugin
+  ) {
     this.aliases = aliases;
     this.hints = hints;
+    this.plugin = plugin;
   }
 
   @Override
@@ -126,6 +142,11 @@ public final class VelocityCommandMeta implements CommandMeta {
   @Override
   public Collection<CommandNode<CommandSource>> getHints() {
     return this.hints;
+  }
+
+  @Override
+  public Optional<Object> getPlugin() {
+    return Optional.ofNullable(plugin);
   }
 
   @Override

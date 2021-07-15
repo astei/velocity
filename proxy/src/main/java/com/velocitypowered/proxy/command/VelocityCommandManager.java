@@ -20,6 +20,7 @@ package com.velocitypowered.proxy.command;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -40,6 +41,8 @@ import com.velocitypowered.proxy.command.registrar.SimpleCommandRegistrar;
 import com.velocitypowered.proxy.event.VelocityEventManager;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -58,6 +61,7 @@ public class VelocityCommandManager implements CommandManager {
   private final List<CommandRegistrar<?>> registrars;
   private final SuggestionsProvider<CommandSource> suggestionsProvider;
   private final CommandGraphInjector<CommandSource> injector;
+  private final Map<String, CommandMeta> commandMeta;
 
   /**
    * Constructs a command manager.
@@ -75,6 +79,7 @@ public class VelocityCommandManager implements CommandManager {
             new RawCommandRegistrar(root, this.lock.writeLock()));
     this.suggestionsProvider = new SuggestionsProvider<>(this.dispatcher, this.lock.readLock());
     this.injector = new CommandGraphInjector<>(this.dispatcher, this.lock.readLock());
+    this.commandMeta = Maps.newConcurrentMap();
   }
 
   public void setAnnounceProxyCommands(boolean announceProxyCommands) {
@@ -134,6 +139,7 @@ public class VelocityCommandManager implements CommandManager {
       return false;
     }
     registrar.register(meta, superInterface.cast(command));
+    commandMeta.put(meta.getAliases().iterator().next(), meta);
     return true;
   }
 
@@ -142,7 +148,15 @@ public class VelocityCommandManager implements CommandManager {
     Preconditions.checkNotNull(alias, "alias");
     // The literals of secondary aliases will preserve the children of
     // the removed literal in the graph.
-    dispatcher.getRoot().removeChildByName(alias.toLowerCase(Locale.ENGLISH));
+    String aliasLowercase = alias.toLowerCase(Locale.ENGLISH);
+    dispatcher.getRoot().removeChildByName(aliasLowercase);
+    commandMeta.remove(aliasLowercase);
+  }
+
+  @Override
+  public Optional<CommandMeta> getCommandMeta(String alias) {
+    Preconditions.checkNotNull(alias, "alias");
+    return Optional.ofNullable(commandMeta.get(alias.toLowerCase(Locale.ENGLISH)));
   }
 
   /**

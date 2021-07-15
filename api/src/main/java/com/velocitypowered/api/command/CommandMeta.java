@@ -9,6 +9,7 @@ package com.velocitypowered.api.command;
 
 import com.mojang.brigadier.tree.CommandNode;
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Contains metadata for a {@link Command}.
@@ -33,6 +34,14 @@ public interface CommandMeta {
   Collection<CommandNode<CommandSource>> getHints();
 
   /**
+   * Returns the plugin who registered the command.
+   * Note some {@link Command} registrations may not provide this information.
+   *
+   * @return the registering plugin
+   */
+  Optional<Object> getPlugin();
+
+  /**
    * Provides a fluent interface to create {@link CommandMeta}s.
    */
   interface Builder {
@@ -55,6 +64,14 @@ public interface CommandMeta {
      *         {@link com.mojang.brigadier.Command}, or has a redirect.
      */
     Builder hint(CommandNode<CommandSource> node);
+
+    /**
+     * Specifies the plugin who registers the {@link Command}.
+     *
+     * @param plugin the registering plugin
+     * @return this builder, for chaining
+     */
+    Builder plugin(Object plugin);
 
     /**
      * Returns a newly-created {@link CommandMeta} based on the specified parameters.

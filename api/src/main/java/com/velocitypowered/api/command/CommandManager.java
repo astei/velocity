@@ -8,6 +8,7 @@
 package com.velocitypowered.api.command;
 
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -72,6 +73,13 @@ public interface CommandManager {
    * @param alias the command alias to unregister
    */
   void unregister(String alias);
+
+  /**
+   * Retrieves the {@link CommandMeta} from the specified command alias, if registered.
+   * @param alias the command alias to lookup
+   * @return an {@link Optional} {@link CommandMeta} of the alias
+   */
+  Optional<CommandMeta> getCommandMeta(String alias);
 
   /**
    * Attempts to asynchronously execute a command from the given {@code cmdLine}.
